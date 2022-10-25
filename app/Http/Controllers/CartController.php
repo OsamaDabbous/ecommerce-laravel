@@ -3,56 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    use ApiResponser;
+
+    public function store()
     {
-        //
+        if (auth()->user()->is_merchant)
+            return $this->error('please create user account', 403);
+
+        try {
+            $cart = Cart::create([
+                'user_id' => auth()->id(),
+                'total' => 0
+            ]);
+
+            return $this->success('success', $cart);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return $this->error($ex->getMessage(), 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Cart  $cart
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Cart $cart)
+    public function show()
     {
-        //
+        $cart = Cart::where('user_id', '=', auth()->id())->with(['items'])->first();
+        if ($cart) {
+            return $this->success('success', $cart);
+        }
+        return  $this->error('Failed', 500);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Cart  $cart
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Cart $cart)
+    public function addToCart(Request $request)
     {
-        //
+        if (auth()->user()->is_merchant)
+            return $this->error('please create user account', 403);
+        try {
+            $cart = Cart::where('user_id', '=', auth()->id())->first();
+            $cart->items()->attach($request['sku'],['qty'=> $request['qty']]);
+
+            return $this->success('success', $cart);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return $this->error($ex->getMessage(), 500);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Cart  $cart
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Cart $cart)
-    {
-        //
-    }
+    public function revmoceFromCart(Request $request){
 
+        if (auth()->user()->is_merchant)
+            return $this->error('please create user account', 403);
+        try {
+            $cart = Cart::where('user_id', '=', auth()->id())->first();
+            $cart->items()->detach($request['sku']);
+            return $this->success('success');
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return $this->error($ex->getMessage(), 500);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *

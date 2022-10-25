@@ -25,6 +25,8 @@ class StoresController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'url' => 'required',
+            'shipping_type' =>'required',
+            'shipping_fees'=> 'required'
         ]);
 
         if ($validator->fails()) {
@@ -35,7 +37,9 @@ class StoresController extends Controller
             $store = Store::create([
                 'name' => $request['name'],
                 'url' => str_replace(' ', '', $request['url']),
-                'merchant_id' => Auth()->id()
+                'merchant_id' => Auth()->id(),
+                'shipping_type' => $request['shipping_type'],
+                'shipping_fees'=>  $request['shipping_fees']
             ]);
 
             return $this->success('success', $store);
@@ -58,9 +62,9 @@ class StoresController extends Controller
     }
 
 
-    public function update(Request $reques)
+    public function update(Request $request)
     {
-
+        return Store::update($request->all());
     }
 
     /**

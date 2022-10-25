@@ -12,9 +12,10 @@ class Store extends Model
     protected $fillable = [
         'name',
         'url',
-        'shipping_rate',
         'merchant_id',
-        'id'
+        'id',
+        'shipping_fees',
+        'shipping_type'
     ];
 
     public function products()

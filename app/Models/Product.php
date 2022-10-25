@@ -20,5 +20,8 @@ class Product extends Model
         'store_id'
     ];
 
-
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class, 'cart_product', 'product_sku','cart_id');
+    }
 }
