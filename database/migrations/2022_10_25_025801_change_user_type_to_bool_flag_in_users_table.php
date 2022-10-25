@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('label');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('user_type_id');
+            $table->boolean('is_merchant')->default(0);
+
         });
     }
 
@@ -27,6 +27,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_types');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 };
