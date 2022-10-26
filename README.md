@@ -1,66 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Laravel Ecommerce
 
-## About Laravel
+This is a demo for ecommerce API using laravel 9
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Features
+- Merchant can create account
+- Merchant can create store 
+- Merchant can add products to each store
+- Merchant can update store data
+    - Store name 
+    - URL
+    - Shipping type
+    - Shipping fees
+    - VAT tex value
+- User can register 
+- User can create view store products 
+- User can add produtc to cart 
+- User can remove product from cart 
+- User can view cart with products and final totals
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation
 
-## Learning Laravel
+clone then update .env with database credentials 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+cd /laravel-ecommerce
+composer install 
+php artisan migrate 
+```
+    
+## API Reference
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+#### Register
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```http
+  POST /api/auth/register
+```
 
-## Laravel Sponsors
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Name |
+| `email` | `string` | **Required**. Email |
+| `password` | `string` | **Required**. Password |
+| `is_merchant` | `boolean` | flag for user type ( 1 if the user is merchant) |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+#### Login
 
-### Premium Partners
+```http
+  POST /api/auth/login
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | **Required**. Email |
+| `password` | `string` | **Required**. Password |
 
-## Contributing
+#### Create Store (Merchant Auth Required)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```http
+  POST /api/store
+```
 
-## Code of Conduct
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Name |
+| `url` | `string` | **Required**. URL |
+| `shipping_type` | `string` | **Required**. shipping cost value type ( percentage or fixed ) |
+| `shipping_fees` | `float` | **Required**. Shipping fees |
+| `vat_value` | `float` | **Required**. VAT Value (always considered %) |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Update Store (Merchant Auth Required)
 
-## Security Vulnerabilities
+```http
+  PATCH /api/store/${url}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` |  Name |
+| `shipping_type` | `string` |  shipping cost value type ( percentage or fixed ) |
+| `shipping_fees` | `float` |  Shipping fees |
+| `vat_value` | `float` |  VAT Value (always considered %) |
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Create Product (Merchant Auth Required)
+
+```http
+  POST /api/product
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name_en` | `string` | **Required**. Name In English |
+| `name_ar` | `string` |  Name In Arabic |
+| `description_en` | `string` | **Required**. Description In English |
+| `description_ar` | `string` | **Required**. Description In Arabic |
+| `price` | `float` | **Required**. Product Price |
+| `tax_included` | `boolean` | **Required**. Flag if the price is tax included |
+| `store_id` | `int` | **Required**. Store id |
+
+#### Create Cart (User Auth Required)
+
+```http
+  POST /api/cart
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `store_id` | `int` | **Required**. Store id |
+
+#### Add to Cart (User Auth Required)
+
+```http
+  POST /api/add-to-cart
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `qty` | `int` | **Required**. qty of product |
+| `sku` | `string` | **Required**. product's SKU |
+
+
+#### Remove From Cart (User Auth Required)
+
+```http
+  POST /api/emove-from-cart/${SKU}
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+    --------------------NONE--------------------
+
+
+
+
+#### Get Store by URL 
+
+```http
+  GET /api/api/store/${id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+    --------------------NONE--------------------
+
+#### Get Store Products 
+
+```http
+  GET /api/api/store/${id}/products
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+    --------------------NONE--------------------
+
+#### Get User Cart  (User Auth Required)
+
+```http
+  GET /api/api/store/${id}/products
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+    --------------------NONE--------------------
+
+
+
+
+
+## Appendix
+
+POSTMAN Collection Link
+
+https://www.getpostman.com/collections/129ef5766c5730ab6a92
+
+
+Draw.io database table digram 
+
+https://drive.google.com/file/d/1UaqbWNuRmVihfUqX4By73RCCi9SOntOX/view?usp=sharing
