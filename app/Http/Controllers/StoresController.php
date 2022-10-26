@@ -64,9 +64,13 @@ class StoresController extends Controller
     }
 
 
-    public function update(Request $request)
+    public function update(Request $request, $url)
     {
-        return Store::update($request->all());
+        $store = Store::where('url','=',$url)->first();
+        if($store->merchant_id != auth()->id()){
+            return $this->error('not allowed', 403);
+        }
+        return $store->update($request->all());
     }
 
     /**

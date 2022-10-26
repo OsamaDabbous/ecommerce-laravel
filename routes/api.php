@@ -24,6 +24,8 @@ Route::get('/store/{url}/products',[ProductsController::class, 'getProductsListB
 Route::group(['middleware' => ['auth:sanctum']], function (){
     Route::post('/store', [StoresController::class, 'store']);
     Route::get('/store/{url}', [StoresController::class, 'show']);
+    Route::patch('/store/{url}', [StoresController::class, 'update']);
+
     Route::post('/product', [ProductsController::class, 'store']);
     Route::post('/cart', [CartController::class, 'store']);
     Route::get('/cart', [CartController::class, 'show']);

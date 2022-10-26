@@ -32,13 +32,13 @@ class CartController extends Controller
 
     public function show()
     {
-         $cart = Cart::where('user_id', '=', auth()->id())->with(['items'])->first();
+        $cart = Cart::where('user_id', '=', auth()->id())->with(['items'])->first();
         if ($cart) {
             if ($cart->store->shipping_type === 'fixed')
                 $cart->final_total = $cart->total + $cart->store->shipping_fees;
             else
                 $cart->final_total = ($cart->total) + ($cart->store->shipping_fees * $cart->total / 100);
-                $cart->shipping_cost = ($cart->store->shipping_fees * $cart->total / 100);
+            $cart->shipping_cost = number_format((float)$cart->final_total - $cart->total, 2, '.', '');
             return $this->success('success', $cart);
         }
         return  $this->error('Failed', 500);
@@ -55,8 +55,8 @@ class CartController extends Controller
                 return $this->error('this cart does not belong to this product store', 403);
 
             $cart->items()->attach($product->id, ['qty' => $request['qty']]);
-            $this->updateTotals($cart, $product, true, $request['qty']);
-
+            // $this->updateTotals($cart, $product, true, $request['qty']);
+            $this->calculateTotal($cart);
             return $this->success('success');
         } catch (\Illuminate\Database\QueryException $ex) {
             return $this->error($ex->getMessage(), 500);
@@ -72,7 +72,8 @@ class CartController extends Controller
             $cart = Cart::where('user_id', '=', auth()->id())->first();
             $product = Product::where('sku', '=', $sku)->first();
             $cart->items()->detach($product->id);
-            $this->updateTotals($cart, $product, false);
+            // $this->updateTotals($cart, $product, false);
+            $this->calculateTotal($cart);
             return $this->success('removed');
         } catch (\Illuminate\Database\QueryException $ex) {
             return $this->error($ex->getMessage(), 500);
@@ -98,6 +99,21 @@ class CartController extends Controller
         $cart->save();
     }
 
+    private function calculateTotal(Cart $cart)
+    {
+        $total = 0;
+        $items = $cart->items;
+        $storeVAT = $cart->store->vat_value;
+        foreach ($items as $item) {
+            if ($item->tax_included) {
+                $total = $total + ($item->price * $item->pivot->qty);
+            } else {
+                $total = $total + (($item->price + ($item->price * $storeVAT / 100))*$item->pivot->qty);
+            }
+        }
+        $cart->total = $total;
+        $cart->save();
+    }
     // public function destroy(Cart $cart)
     // {
     //     //
