@@ -6,7 +6,6 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {

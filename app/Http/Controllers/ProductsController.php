@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Models\Store;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
