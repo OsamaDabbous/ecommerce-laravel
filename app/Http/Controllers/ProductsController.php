@@ -73,17 +73,6 @@ use ApiResponser;
         return  $this->error('Failed',500);
     }
 
-
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
-
-    public function destroy(Product $product)
-    {
-        //
-    }
-
     private function generateSKU($name){
         return substr(str_replace(array('\'', '"', ',', ';', '<', '>', '$', '.', '|', '/'), '', Hash::make($name . Carbon::now()->toDateString())), 0, 10);
     }

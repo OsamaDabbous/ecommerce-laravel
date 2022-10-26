@@ -72,19 +72,4 @@ class StoresController extends Controller
         }
         return $store->update($request->all());
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Store $store)
-    {
-        //
-    }
-
-
-
-
 }

@@ -93,8 +93,4 @@ class CartController extends Controller
         $cart->total = $total;
         $cart->save();
     }
-    // public function destroy(Cart $cart)
-    // {
-    //     //
-    // }
 }
