@@ -55,7 +55,6 @@ class CartController extends Controller
                 return $this->error('this cart does not belong to this product store', 403);
 
             $cart->items()->attach($product->id, ['qty' => $request['qty']]);
-            // $this->updateTotals($cart, $product, true, $request['qty']);
             $this->calculateTotal($cart);
             return $this->success('success');
         } catch (\Illuminate\Database\QueryException $ex) {
@@ -72,31 +71,11 @@ class CartController extends Controller
             $cart = Cart::where('user_id', '=', auth()->id())->first();
             $product = Product::where('sku', '=', $sku)->first();
             $cart->items()->detach($product->id);
-            // $this->updateTotals($cart, $product, false);
             $this->calculateTotal($cart);
             return $this->success('removed');
         } catch (\Illuminate\Database\QueryException $ex) {
             return $this->error($ex->getMessage(), 500);
         }
-    }
-
-    private function updateTotals(Cart $cart, Product $product, $add, $qty = 1)
-    {
-        $store = $product->store;
-        $total = $cart->total;
-        $price = $product->price;
-
-        if (!$product->tax_included) {
-            $price = ($product->price * $store->vat_value / 100) + $product->price;
-        }
-
-        if ($add)
-            $total = $total + ($price * $qty);
-        else
-            $total = $total - $price;
-
-        $cart->total = $total;
-        $cart->save();
     }
 
     private function calculateTotal(Cart $cart)
