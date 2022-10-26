@@ -54,7 +54,7 @@ class CartController extends Controller
             if ($cart->store->id != $product->store->id)
                 return $this->error('this cart does not belong to this product store', 403);
 
-            $cart->items()->attach($product->sku, ['qty' => $request['qty']]);
+            $cart->items()->attach($product->id, ['qty' => $request['qty']]);
             $this->updateTotals($cart, $product, true, $request['qty']);
 
             return $this->success('success');
@@ -71,7 +71,7 @@ class CartController extends Controller
         try {
             $cart = Cart::where('user_id', '=', auth()->id())->first();
             $product = Product::where('sku', '=', $sku)->first();
-            $cart->items()->detach($sku);
+            $cart->items()->detach($product->id);
             $this->updateTotals($cart, $product, false);
             return $this->success('removed');
         } catch (\Illuminate\Database\QueryException $ex) {
