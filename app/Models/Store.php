@@ -15,7 +15,8 @@ class Store extends Model
         'merchant_id',
         'id',
         'shipping_fees',
-        'shipping_type'
+        'shipping_type',
+        'vat_value'
     ];
 
     public function products()

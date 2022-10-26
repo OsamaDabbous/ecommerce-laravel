@@ -85,6 +85,6 @@ use ApiResponser;
     }
 
     private function generateSKU($name){
-        return substr(str_replace(array('\'', '"', ',', ';', '<', '>', '$', '.', '|', '/'), '', Hash::make($name . Carbon::now()->toDateString())), 0, 6);
+        return substr(str_replace(array('\'', '"', ',', ';', '<', '>', '$', '.', '|', '/'), '', Hash::make($name . Carbon::now()->toDateString())), 0, 10);
     }
 }

@@ -26,7 +26,8 @@ class StoresController extends Controller
             'name' => 'required',
             'url' => 'required',
             'shipping_type' =>'required',
-            'shipping_fees'=> 'required'
+            'shipping_fees'=> 'required',
+            'vat_value' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -39,7 +40,8 @@ class StoresController extends Controller
                 'url' => str_replace(' ', '', $request['url']),
                 'merchant_id' => Auth()->id(),
                 'shipping_type' => $request['shipping_type'],
-                'shipping_fees'=>  $request['shipping_fees']
+                'shipping_fees'=>  $request['shipping_fees'],
+                'vat_value' => $request['vat_value']
             ]);
 
             return $this->success('success', $store);
